@@ -14,9 +14,9 @@ public interface ItemService {
 
     ItemResponse getItemById(Long itemId, Long userId);
 
-    Collection<ItemResponse> getAllItemsByOwner (Long userId);
+    Collection<ItemResponse> getAllItemsByOwner(Long userId);
 
-    Collection<ItemResponse> searchItems (String text);
+    Collection<ItemResponse> searchItems(String text);
 
     void deleteItem(Long itemId, Long userId);
 }
