@@ -10,9 +10,6 @@ import ru.practicum.shareit.item.dto.UpdateItemRequest;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping(path = "/items")

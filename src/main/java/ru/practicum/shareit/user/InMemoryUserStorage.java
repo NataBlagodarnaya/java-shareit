@@ -14,6 +14,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
 
+    @Override
     public Collection<User> findAll() {
         return users.values();
     }
@@ -42,17 +43,11 @@ public class InMemoryUserStorage implements UserStorage {
         return Optional.ofNullable(users.get(id));
     }
 
+
     @Override
     public boolean isExistEmail(String email) {
-        if (email == null) {
-            return false;
-        }
-        for (User user : users.values()) {
-            if (user.getEmail() != null && user.getEmail().equalsIgnoreCase(email)) {
-                return true;
-            }
-        }
-        return false;
+        return email != null && users.values().stream()
+                .anyMatch(user -> user.getEmail() != null && user.getEmail().equalsIgnoreCase(email));
     }
 
     @Override
@@ -67,10 +62,5 @@ public class InMemoryUserStorage implements UserStorage {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
-    }
-
-    private boolean isExistEmail(User user) {
-        return users.values().stream()
-                .anyMatch(u -> u.getEmail().equals(user.getEmail()));
     }
 }

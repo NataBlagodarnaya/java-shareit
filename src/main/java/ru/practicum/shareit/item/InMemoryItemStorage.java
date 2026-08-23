@@ -41,31 +41,19 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Collection<Item> findAllByOwner(Long userId) {
-        Collection<Item> ownerItems = new ArrayList<>();
-        for (Item item : items.values()) {
-            if (item.getOwner() != null && item.getOwner().getId().equals(userId)) {
-                ownerItems.add(item);
-            }
-        }
-        return ownerItems;
+        return items.values().stream()
+                .filter(item -> item.getOwner() != null && item.getOwner().getId().equals(userId))
+                .toList();
     }
 
     @Override
     public Collection<Item> search(String text) {
-        Collection<Item> foundItems = new ArrayList<>();
         String query = text.toLowerCase();
-        for (Item item : items.values()) {
-            if (item.getAvailable().equals(true)) {
-                boolean matchesName = item.getName() != null
-                        && item.getName().toLowerCase().contains(query);
-                boolean matchesDescription = item.getDescription() != null
-                        && item.getDescription().toLowerCase().contains(query);
-                if (matchesName || matchesDescription) {
-                    foundItems.add(item);
-                }
-            }
-        }
-        return foundItems;
+        return items.values().stream()
+                .filter(item -> (item.getAvailable() != null && item.getAvailable())
+                        && ((item.getName() != null && item.getName().toLowerCase().contains(query))
+                        || (item.getDescription() != null && item.getDescription().toLowerCase().contains(query))))
+                        .toList();
     }
 
     @Override

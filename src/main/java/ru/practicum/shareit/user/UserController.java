@@ -10,9 +10,6 @@ import ru.practicum.shareit.user.dto.UserResponse;
 
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping(path = "/users")
@@ -28,8 +25,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public UserResponse getUserById(@PathVariable Long userId) {
-        log.info("Получен запрос GET /users/{}", userId);
-        return userService.getUserById(userId); // Убедитесь, что этот метод есть в вашем сервисе
+        return userService.getUserById(userId);
     }
 
     @PostMapping

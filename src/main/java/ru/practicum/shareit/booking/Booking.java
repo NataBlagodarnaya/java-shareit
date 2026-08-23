@@ -18,5 +18,5 @@ public class Booking {
     private LocalDateTime end;
     private Item item;
     private User booker;
-    private String status; //WAITING — новое бронирование, ожидает одобрения, APPROVED —бронирование подтверждено владельцем, REJECTED — бронирование отклонено владельцем, CANCELED — бронирование отменено создателем.
+    private BookingStatus status;
 }
