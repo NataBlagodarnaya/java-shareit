@@ -7,13 +7,13 @@ public interface UserStorage {
 
     Collection<User> findAll();
 
-    User create(User user);
+    User save(User user);
 
     User update(User user);
 
     Optional<User> findById(Long id);
 
-    boolean isExistEmail(String email);
+    boolean existsByEmail(String email);
 
-    void delete(Long id);
+    void deleteById(Long id);
 }

@@ -15,6 +15,11 @@ public final class UserMapper {
         return dto;
     }
 
+    public static UserShortDto toUserShortDto(User user) {
+        if (user == null) return null;
+        return new UserShortDto(user.getId());
+    }
+
     public static User toUser(NewUserRequest dto) {
         User user = new User();
         user.setName(dto.getName());

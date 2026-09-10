@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.dto.UserResponse;
 
 import java.util.Collection;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor

@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemResponse;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 
 import java.util.Collection;
 
@@ -19,4 +17,6 @@ public interface ItemService {
     Collection<ItemResponse> searchItems(String text);
 
     void deleteItem(Long itemId, Long userId);
+
+    CommentResponse createComment(Long itemId, Long userId, NewCommentRequest request);
 }

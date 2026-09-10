@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -8,12 +9,13 @@ import java.util.*;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "db.mode", havingValue = "memory", matchIfMissing = true)
 public class InMemoryItemStorage implements ItemStorage {
 
     private final Map<Long, Item> items = new HashMap<>();
 
     @Override
-    public Item create(Item item) {
+    public Item save(Item item) {
         item.setId(getNextId());
         items.put(item.getId(), item);
         return item;
@@ -57,7 +59,7 @@ public class InMemoryItemStorage implements ItemStorage {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         items.remove(id);
     }
 
