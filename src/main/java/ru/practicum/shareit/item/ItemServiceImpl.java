@@ -11,7 +11,6 @@ import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserStorage;
 import ru.practicum.shareit.util.ValidationUtil;
 
 import java.time.LocalDateTime;
