@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @Data
 public class NewBookingRequest {
 
-        @NotNull(message = "ID вещи не может быть пустым")
-        private Long itemId;
+    @NotNull(message = "ID вещи не может быть пустым")
+    private Long itemId;
 
-        @NotNull(message = "Дата начала не может быть пустой")
-        @FutureOrPresent(message = "Дата начала не может быть в прошлом")
-        private LocalDateTime start;
+    @NotNull(message = "Дата начала не может быть пустой")
+    @FutureOrPresent(message = "Дата начала не может быть в прошлом")
+    private LocalDateTime start;
 
-        @NotNull(message = "Дата окончания не может быть пустой")
-        @Future(message = "Дата окончания должна быть в будущем")
-        private LocalDateTime end;
-    }
+    @NotNull(message = "Дата окончания не может быть пустой")
+    @Future(message = "Дата окончания должна быть в будущем")
+    private LocalDateTime end;
+}

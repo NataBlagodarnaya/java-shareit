@@ -104,23 +104,14 @@ public class BookingServiceImpl implements BookingService {
         }
         LocalDateTime now = LocalDateTime.now();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
-        List<Booking> bookings;
-
-        switch (state) {
-            case ALL ->
-                    bookings = bookingRepository.findByBooker_Id(userId, sortByStartDesc);
-            case CURRENT ->
-                    bookings = bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
-            case PAST ->
-                    bookings = bookingRepository.findByBooker_IdAndEndIsBefore(userId, now, sortByStartDesc);
-            case FUTURE ->
-                    bookings = bookingRepository.findByBooker_IdAndStartIsAfter(userId, now, sortByStartDesc);
-            case WAITING ->
-                    bookings = bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
-            case REJECTED ->
-                    bookings = bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sortByStartDesc);
-            default -> bookings = List.of();
-        }
+        List<Booking> bookings = switch (state) {
+            case ALL      -> bookingRepository.findByBooker_Id(userId, sortByStartDesc);
+            case CURRENT  -> bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
+            case PAST     -> bookingRepository.findByBooker_IdAndEndIsBefore(userId, now, sortByStartDesc);
+            case FUTURE   -> bookingRepository.findByBooker_IdAndStartIsAfter(userId, now, sortByStartDesc);
+            case WAITING  -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
+            case REJECTED -> bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sortByStartDesc);
+        };
         log.info("Пользователем с id = {} получена информация о бронированиях с фильтром {}", userId, state);
         return bookings.stream()
                 .map(BookingMapper::toBookingResponse)
@@ -136,24 +127,16 @@ public class BookingServiceImpl implements BookingService {
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Unknown state: " + stateParam);
         }
-
         LocalDateTime now = LocalDateTime.now();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
-        List<Booking> bookings;
-
-        switch (state) {
-            case ALL -> bookings = bookingRepository.findByItem_Owner_Id(userId, sortByStartDesc);
-            case CURRENT ->
-                    bookings = bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
-            case PAST -> bookings = bookingRepository.findByItem_Owner_IdAndEndIsBefore(userId, now, sortByStartDesc);
-            case FUTURE ->
-                    bookings = bookingRepository.findByItem_Owner_IdAndStartIsAfter(userId, now, sortByStartDesc);
-            case WAITING ->
-                    bookings = bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
-            case REJECTED ->
-                    bookings = bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStartDesc);
-            default -> bookings = List.of();
-        }
+        List<Booking> bookings =switch (state) {
+            case ALL      -> bookingRepository.findByItem_Owner_Id(userId, sortByStartDesc);
+            case CURRENT  -> bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
+            case PAST     -> bookingRepository.findByItem_Owner_IdAndEndIsBefore(userId, now, sortByStartDesc);
+            case FUTURE   -> bookingRepository.findByItem_Owner_IdAndStartIsAfter(userId, now, sortByStartDesc);
+            case WAITING  -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.WAITING, sortByStartDesc);
+            case REJECTED -> bookingRepository.findByItem_Owner_IdAndStatus(userId, BookingStatus.REJECTED, sortByStartDesc);
+        };
         log.info("Владельцем с id = {} получена информация о бронированиях его вещей с фильтром {}", userId, state);
         return bookings.stream()
                 .map(BookingMapper::toBookingResponse)
