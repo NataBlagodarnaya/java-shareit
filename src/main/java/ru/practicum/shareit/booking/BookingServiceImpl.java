@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
         }
         LocalDateTime now = LocalDateTime.now();
         Sort sortByStartDesc = Sort.by(Sort.Direction.DESC, "start");
-        List<Booking> bookings =switch (state) {
+        List<Booking> bookings = switch (state) {
             case ALL      -> bookingRepository.findByItem_Owner_Id(userId, sortByStartDesc);
             case CURRENT  -> bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(userId, now, now, sortByStartDesc);
             case PAST     -> bookingRepository.findByItem_Owner_IdAndEndIsBefore(userId, now, sortByStartDesc);
