@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS comments, bookings, items, requests, users CASCADE;
-
 CREATE TABLE IF NOT EXISTS users (
             user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             user_name VARCHAR(40) NOT NULL,
