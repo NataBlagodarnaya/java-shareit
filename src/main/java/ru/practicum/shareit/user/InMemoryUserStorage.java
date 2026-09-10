@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
 @Component
+@ConditionalOnProperty(name = "db.mode", havingValue = "memory", matchIfMissing = true)
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
@@ -20,7 +20,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
+    public User save(User user) {
         user.setId(getNextId());
         users.put(user.getId(), user);
         return user;
@@ -45,13 +45,13 @@ public class InMemoryUserStorage implements UserStorage {
 
 
     @Override
-    public boolean isExistEmail(String email) {
+    public boolean existsByEmail(String email) {
         return email != null && users.values().stream()
                 .anyMatch(user -> user.getEmail() != null && user.getEmail().equalsIgnoreCase(email));
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         users.remove(id);
     }
 

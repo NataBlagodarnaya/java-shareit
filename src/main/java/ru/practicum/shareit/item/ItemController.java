@@ -2,15 +2,11 @@ package ru.practicum.shareit.item;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemResponse;
-import ru.practicum.shareit.item.dto.NewItemRequest;
-import ru.practicum.shareit.item.dto.UpdateItemRequest;
+import ru.practicum.shareit.item.dto.*;
 
 import java.util.Collection;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
@@ -52,5 +48,12 @@ public class ItemController {
     public void deleteItem(@PathVariable Long itemId,
                            @RequestHeader("X-Sharer-User-Id") Long userId) {
         itemService.deleteItem(itemId, userId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponse createComment(@PathVariable Long itemId,
+                                         @RequestHeader("X-Sharer-User-Id") Long userId,
+                                         @Valid @RequestBody NewCommentRequest request) {
+        return itemService.createComment(itemId, userId, request);
     }
 }

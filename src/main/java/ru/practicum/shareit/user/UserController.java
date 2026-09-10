@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.NewUserRequest;
 import ru.practicum.shareit.user.dto.UpdateUserRequest;
@@ -10,7 +9,6 @@ import ru.practicum.shareit.user.dto.UserResponse;
 
 import java.util.Collection;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ItemStorage {
 
-    Item create(Item item);
+    Item save(Item item);
 
     Item update(Item item);
 
@@ -15,5 +15,5 @@ public interface ItemStorage {
 
     Collection<Item> search(String text);
 
-    void delete(Long id);
+    void deleteById(Long id);
 }

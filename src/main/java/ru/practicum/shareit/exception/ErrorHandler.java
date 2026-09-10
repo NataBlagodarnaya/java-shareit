@@ -54,4 +54,11 @@ public class ErrorHandler {
         log.error("Что-то пошло не так. Это не обработанная ошибка: {}", ex.getMessage(), ex);
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequestException(BadRequestException ex) {
+        log.error("Некорректный запрос (Bad Request): {}", ex.getMessage(), ex);
+        return new ErrorResponse(ex.getMessage());
+    }
 }
