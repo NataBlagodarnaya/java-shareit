@@ -7,9 +7,9 @@ import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.ItemStorage;
+import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserStorage;
+import ru.practicum.shareit.user.UserRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -17,11 +17,11 @@ import ru.practicum.shareit.user.UserStorage;
 public class ValidationUtil {
 
     private final BookingRepository bookingRepository;
-    private final ItemStorage itemStorage;
-    private final UserStorage userStorage;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     public User getUserOrThrow(Long userId) {
-        return userStorage.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.error("Пользователь с id = {} не найден", userId);
                     return new NotFoundException("Пользователь с id = " + userId + " не найден");
@@ -29,7 +29,7 @@ public class ValidationUtil {
     }
 
     public Item getItemOrThrow(Long itemId) {
-        return itemStorage.findById(itemId)
+        return itemRepository.findById(itemId)
                 .orElseThrow(() -> {
                     log.error("Вещь с id {} не найдена", itemId);
                     return new NotFoundException("Вещь с id " + itemId + " не найдена");

@@ -12,4 +12,5 @@ public class NewItemRequest {
     private String description;
     @NotNull(message = "Статус доступности (available) должен быть указан")
     private Boolean available;
+    private Long requestId;
 }

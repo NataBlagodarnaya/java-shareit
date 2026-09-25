@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
@@ -14,4 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "AND ( UPPER(i.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +
             "OR UPPER(i.description) LIKE UPPER(CONCAT('%', ?1, '%')))")
     Collection<Item> searchByText(String text);
+
+    Collection<Item> findAllByRequestIdIn(List<Long> requestIds);
 }

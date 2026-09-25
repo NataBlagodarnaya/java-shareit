@@ -19,13 +19,13 @@ import java.util.Collection;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
     private final ValidationUtil validationUtil;
 
     @Override
     public Collection<UserResponse> getAllUsers() {
         log.info("Получен запрос на получение всех пользователей");
-        return userStorage.findAll().stream()
+        return userRepository.findAll().stream()
                 .map(UserMapper::toUserResponse)
                 .toList();
     }
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse createUser(NewUserRequest userDto) {
         validateEmailUniqueness(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
-        User createdUser = userStorage.save(user);
+        User createdUser = userRepository.save(user);
         log.info("Создан новый пользователь с id: {}", createdUser.getId());
         return UserMapper.toUserResponse(createdUser);
     }
@@ -49,8 +49,13 @@ public class UserServiceImpl implements UserService {
         if (newUserDto.getEmail() != null && !newUserDto.getEmail().equals(oldUser.getEmail())) {
             validateEmailUniqueness(newUserDto.getEmail());
         }
-        User userForUpdate = UserMapper.toUser(newUserDto);
-        User updatedUser = userStorage.update(userForUpdate);
+        if (newUserDto.getName() != null && !newUserDto.getName().isBlank()) {
+            oldUser.setName(newUserDto.getName());
+        }
+        if (newUserDto.getEmail() != null && !newUserDto.getEmail().isBlank()) {
+            oldUser.setEmail(newUserDto.getEmail());
+        }
+        User updatedUser = userRepository.save(oldUser);
         log.info("Успешно обновлен пользователь с id: {}", userId);
         return UserMapper.toUserResponse(updatedUser);
     }
@@ -65,12 +70,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         validationUtil.getUserOrThrow(userId);
-        userStorage.deleteById(userId);
+        userRepository.deleteById(userId);
         log.info("Удалена информация о пользователе с id: {}", userId);
     }
 
     private void validateEmailUniqueness(String email) {
-        if (userStorage.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email)) {
             log.error("Ошибка 409 Conflict: Email {} уже используется", email);
             throw new DuplicatedDataException("Этот Email уже используется");
         }

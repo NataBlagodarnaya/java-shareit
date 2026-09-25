@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.util.ValidationUtil;
 
@@ -26,10 +28,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final ValidationUtil validationUtil;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional
     @Override
@@ -37,7 +40,12 @@ public class ItemServiceImpl implements ItemService {
         User owner = validationUtil.getUserOrThrow(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
-        Item savedItem = itemStorage.save(item);
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос на вещь с id " + itemDto.getRequestId() + " не найден"));
+            item.setRequest(itemRequest);
+        }
+        Item savedItem = itemRepository.save(item);
         log.info("Пользователь {} успешно добавил новую вещь с id: {}", userId, savedItem.getId());
         return ItemMapper.toItemResponse(savedItem);
     }
@@ -47,9 +55,17 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponse updateItem(Long userId, Long itemId, UpdateItemRequest itemDto) {
         Item oldItem = validationUtil.getItemOrThrow(itemId);
         validateOwner(oldItem, userId);
-        Item newItem = ItemMapper.toItem(itemDto);
-        newItem.setId(itemId);
-        Item updatedItem = itemStorage.update(newItem);
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
+            oldItem.setName(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
+            oldItem.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            oldItem.setAvailable(itemDto.getAvailable());
+        }
+
+        Item updatedItem = itemRepository.save(oldItem);
         log.info("Пользователь {} успешно обновил информацию о вещи с id: {}", userId, itemId);
         return ItemMapper.toItemResponse(updatedItem);
     }
@@ -85,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemResponse> getAllItemsByOwner(Long userId) {
         validationUtil.getUserOrThrow(userId);
 
-        Collection<Item> items = itemStorage.findAllByOwner(userId);
+        Collection<Item> items = itemRepository.findAllByOwnerId(userId);
         LocalDateTime now = LocalDateTime.now();
 
         List<Long> itemIds = items.stream().map(Item::getId).toList();
@@ -122,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
             log.info("Передан пустой текст для поиска. Возвращен пустой список.");
             return new ArrayList<>();
         }
-        Collection<ItemResponse> foundItems = itemStorage.search(text).stream()
+        Collection<ItemResponse> foundItems = itemRepository.searchByText(text).stream()
                 .map(ItemMapper::toItemResponse)
                 .toList();
         log.info("Поиск завершен успешно. По запросу '{}' найдено вещей: {}", text, foundItems.size());
@@ -134,7 +150,7 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Long itemId, Long userId) {
         Item item = validationUtil.getItemOrThrow(itemId);
         validateOwner(item, userId);
-        itemStorage.deleteById(itemId);
+        itemRepository.deleteById(itemId);
         log.info("Удалена информация о предмете с id: {}", itemId);
     }
 

@@ -7,9 +7,6 @@ import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Entity
 @Table(name = "requests")
 @Getter
@@ -24,8 +21,8 @@ public class ItemRequest {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "requestor_id", nullable = false)
-    private User requestor;
+    @JoinColumn(name = "requester_id", nullable = false)
+    private User requester;
 
     @Column(name = "created_date", nullable = false)
     private LocalDateTime created;
